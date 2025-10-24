@@ -7,12 +7,12 @@
 
 ---
 ## Screenshots
-
+<!-- 
 ### الصفحة الرئيسية
 ![Homepage](imag/1.jpg)
 
 ### صفحة عرض التذاكر
-![Tickets Page](imag/2.jpg)
+![Tickets Page](imag/2.jpg) -->
 
 ### صفحة تفاصيل التذكرة
 ![Ticket Details](imag/3.jpg)
