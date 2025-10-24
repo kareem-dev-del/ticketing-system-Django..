@@ -1,0 +1,17 @@
+.msg-warning {
+  background-color: rgb(189 189 32);
+}
+
+.msg-success {
+  background-color: rgb(43, 230, 58);
+}
+
+.msg-danger {
+  background-color: rgb(238, 40, 40);
+}
+
+.active {
+  background-color: rgb(48 44 44);
+  border-radius: 12px;
+  padding: 5px;
+}

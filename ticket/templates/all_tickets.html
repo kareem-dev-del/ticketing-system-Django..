@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+  <div class="text-center mt-5 mb-10">
+    <h1 class="text-4xl text-bold">Tickets</h1>
+  </div>
+  <div class="relative overflow-x-auto flex justify-center ">
+    <table class="w-[80%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-lg text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Ticket ID
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Title
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Created On
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Assigned To
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in ticket %}
+            <tr class="bg-white border-b mb-2 dark:bg-gray-800 dark:border-gray-700">
+                
+                
+                   <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                     {{t.number}}
+                    </th>
+                    <td class="px-6 py-4 text-lg">
+                       {{t.title|title}}
+                    </td>
+                    <td class="px-6 py-4 text-lg">
+                       {{t.created_at|date:"d,m,Y"}}
+                    </td>
+                    
+                    {% if t.assigned_to %}
+                         <td class="px-6 py-4 text-lg">
+                           {{t.assigned_to}}
+                         </td>
+                     {% else  %}
+                         <td class="text-center text-lg text-white rounded-xl bg-red-500">
+                            Not assigned
+                          </td>
+                    {% endif %}
+                    
+                    {% if t.status == "Active" %}
+                        <td class="text-center text-lg text-white rounded-xl bg-green-600">
+                          Active
+                       </td>
+                    {% elif t.status == "Pending" %}
+                        <td class="text-center text-lg text-white rounded-xl bg-yellow-600">
+                          Pending
+                       </td>
+                    {% elif t.status == "Completed" %}
+                        <td class="text-center text-lg text-white rounded-xl bg-red-500">
+                          Completed
+                       </td>
+                        
+                    {% endif %}
+                    <td class="px-6 py-4 text-lg">
+                        <a href="{% url 'detail_ticket' t.id %}" class="hover:underline">View Detail</a>
+                    </td> 
+                </tr> 
+                {% endfor %}
+                    
+                 {% comment %} <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    853512e9-6595-4b11-98b5-eeb6911a945e
+                </th>  {% endcomment %}
+                {% comment %} <td class="px-6 py-4 text-lg">
+                    new ticket
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    May 6, 2024
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    enginear1
+                </td>
+                <td class="text-center text-lg text-white rounded-xl bg-red-500">
+                    compleated
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    <a href="#" class="hover:underline">View Detail</a>
+                </td> {% endcomment %}
+            
+            {% comment %} <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    853512e9-6595-4b11-98b5-eeb6911a945e
+                </th>
+                <td class="px-6 py-4 text-lg">
+                    new ticket
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    May 6, 2024
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    enginear1
+                </td>
+                <td class="text-center text-lg text-white rounded-xl bg-yellow-500">
+                    Pending
+                </td>
+                <td class="px-6 py-4 text-lg">
+                    <a href="#" class="hover:underline">View Detail</a>
+                </td>
+            </tr> {% endcomment %}
+           
+        </tbody>
+    </table>
+  </div>
+{% endblock  %}
+

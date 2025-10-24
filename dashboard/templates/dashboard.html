@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Favicon -->
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+</head>
+<!-- navbar -->
+
+<body class="w-full h-full overflow-hidden flex items-center justify-center" style="background: #edf2f7;">
+
+  <div class="flex w-full h-screen bg-gray-800 " :class="{ 'overflow-hidden': isSideMenuOpen }">
+    <!-- Desktop sidebar -->
+    <aside class="z-20 flex-shrink-0 hidden w-60 pl-2 overflow-y-auto bg-gray-800 md:block">
+      <div>
+        <div class="text-white">
+          <div class="flex p-2  bg-gray-800">
+            <div class="flex py-3 px-2 items-center">
+              <p class="text-2xl text-green-500 font-semibold">CH</p>
+              <p class="ml-2 font-semibold italic">
+                DASHBOARD</p>
+            </div>
+          </div>
+          <div>
+            
+           
+              
+            <ul class="mt-6 leading-10">
+               {% if request.user.is_customer %}
+                  <li class="relative px-2 py-1 ">
+                    <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                      href="{% url 'create_ticket' %}">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      <span class="ml-4">Create Ticket</span>
+                    </a>
+                </li>
+                  <li class="relative px-2 py-1 ">
+                    <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                    href="{% url 'all_tickets' %}" >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+                      <span class="ml-4">View Tickets</span>
+                    </a>
+                </li>
+
+               {% elif request.user.is_admin %}
+                <li class="relative px-2 py-1 ">
+                    <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                      href="{% url 'ticket_queue' %}">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                      </svg>
+                      <span class="ml-4">Ticket Queue</span>
+                    </a>
+                </li>
+                <li class="relative px-2 py-1 ">
+                    <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                      href="{% url 'workspace' %}">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+                      </svg>
+                      <span class="ml-4">Workspace</span>
+                    </a>
+                </li>
+                <li class="relative px-2 py-1" x-data="{ Open : false  }">
+                    <div
+                      class="inline-flex items-center justify-between w-full text-base font-semibold transition-colors duration-150 text-gray-500  hover:text-yellow-400 cursor-pointer"
+                      x-on:click="Open = !Open">
+                      <span class="inline-flex items-center  text-sm font-semibold text-white hover:text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+                        </svg>
+                        <span class="ml-4">Manage Tickets</span>
+                      </span>
+                      <svg xmlns="http://www.w3.org/2000/svg" x-show="!Open" class="ml-1  text-white w-4 h-4" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+
+                      <svg xmlns="http://www.w3.org/2000/svg" x-show="Open" class="ml-1  text-white w-4 h-4" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                
+
+                  <div x-show.transition="Open" style="display:none;">
+                    <ul x-transition:enter="transition-all ease-in-out duration-300"
+                      x-transition:enter-start="opacity-25 max-h-0" x-transition:enter-end="opacity-100 max-h-xl"
+                      x-transition:leave="transition-all ease-in-out duration-300"
+                      x-transition:leave-start="opacity-100 max-h-xl" x-transition:leave-end="opacity-0 max-h-0"
+                      class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium  rounded-md shadow-inner  bg-green-400"
+                      aria-label="submenu">
+
+                      <li class="px-2 py-1 text-white bg-red-500 rounded-xl duration-150">
+                        <div class="px-1 hover:font-bold rounded-md">
+                          <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                            </svg>
+                            <a href="{%url 'all_tickets_closed' %}" class="w-full ml-2  text-sm font-semibold font-bold text-white hover:text-gray-800">Closed Tickets</a>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              {% endif %}
+              <!-- Authentickated -->
+              
+            {% if request.user.is_authenticated %}
+                <li class="relative px-4 py-3 ">
+                  <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-red-500"
+                    href="{%  url 'logout' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                    </svg>
+                    <span class="ml-4">Logout</span>
+                </a>
+                {% else  %}
+                 <li class="relative px-4 py-3 ">
+                <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                  href="{%  url 'login' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
+                  </svg>
+                  <span class="ml-4">Login</span>
+                </a>
+              <li class="relative px-4 py-3 ">
+                <a class="inline-flex items-center w-full text-sm font-semibold text-white transition-colors duration-150 cursor-pointer hover:text-green-500"
+                  href="{% url 'register' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                  </svg>                  
+                  <span class="ml-4">Register</span>
+                </a>
+              </li>
+              {% endif %}
+                
+             
+             
+            </ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="flex flex-col flex-1 w-full overflow-y-auto">
+      <header class="z-40 py-4  bg-gray-800  ">
+        <div class="flex items-center justify-center h-8 px-6 mx-auto">
+          <!-- Mobile hamburger -->
+          <button class="p-1 mr-5 -ml-1 rounded-md md:hidden focus:outline-none focus:shadow-outline-purple"
+            @click="toggleSideMenu" aria-label="Menu">
+            <x-heroicon-o-menu class="w-6 h-6 text-white" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+          </button>
+
+          <!-- Search Input -->
+          <div class="flex justify-center items-center w-[40%] mt-2 mr-4">
+            <div class="relative flex w-full flex-wrap items-stretch mb-3">
+              <input type="search" placeholder="Search"
+                class="form-input px-3 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded-lg text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full pr-10" />
+              <span
+                class="z-10 h-full leading-snug font-normal  text-center text-gray-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 -mt-1" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </header>
+      <main class="h-full">
+        <div class="grid h-full mb-4 pb-10 px-8 mx-4 rounded-3xl bg-gray-100 border-4 border-green-400">
+
+          <div class="grid h-full grid-cols-12 gap-6">
+            <div class="grid grid-cols-12 col-span-12 gap-6 xxl:col-span-9">
+              <div class="col-span-12 mt-8">
+                <div class="flex items-center h-10 intro-y">
+                  <h2 class="mr-5 text-lg font-medium truncate">Dashboard</h2>
+                </div>
+                <div class="grid grid-cols-12 gap-6 mt-5">
+                  <!-- Card -->
+                  
+                  {% if request.user.is_customer %}
+                    
+                    <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                      href="#">
+                      <div class="p-5">
+                        <div class="flex justify-between">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-green-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                          </svg>
+                        </div>
+                        <div class="ml-2 w-full flex-1">
+                          <div>
+                            <div class="mt-3 text-3xl font-bold leading-8">{{ all_ticket}}</div>
+
+                            <div class="mt-1 text-base text-gray-600">All Tickets</div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                      href="#">
+                      <div class="p-5">
+                        <div class="flex justify-between">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-green-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div class="ml-2 w-full flex-1">
+                          <div>
+                            <div class="mt-3 text-3xl font-bold leading-8">{{ active_ticket}}</div>
+
+                            <div class="mt-1 text-base text-gray-600">Active Tickets</div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                      href="#">
+                      <div class="p-5">
+                        <div class="flex justify-between">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-red-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          </svg>
+                        </div>
+                        <div class="ml-2 w-full flex-1">
+                          <div>
+                            <div class="mt-3 text-3xl font-bold leading-8">{{closed_ticket}}</div>
+
+                            <div class="mt-1 text-base text-gray-600">Closed Tickets</div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                      href="#">
+                      <div class="p-5">
+                        <div class="flex justify-between">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                          </svg>
+                        </div>
+                        <div class="ml-2 w-full flex-1">
+                          <div>
+                            <div class="mt-3 text-3xl font-bold leading-8">{{pending_ticket}}</div>
+
+                            <div class="mt-1 text-base text-gray-600">Pending Tickets</div>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                     {% elif request.user.is_admin %}
+                      <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                        href="{% url 'all_tickets' %}">
+                        <div class="p-5">
+                          <div class="flex justify-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-green-500">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                            </svg>
+                          </div>
+                          <div class="ml-2 w-full flex-1">
+                            <div>
+                              <div class="mt-3 text-3xl font-bold leading-8">{{all_ticket_n}}</div>
+
+                              <div class="mt-1 text-base text-gray-600">All Tickets</div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                        href="{% url 'workspace' %}">
+                        <div class="p-5">
+                          <div class="flex justify-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-green-500" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <div class="ml-2 w-full flex-1">
+                            <div>
+                              <div class="mt-3 text-3xl font-bold leading-8">{{active_ticket_n}}</div>
+
+                              <div class="mt-1 text-base text-gray-600">Active Tickets</div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                        href="{% url 'all_tickets_closed' %}">
+                        <div class="p-5">
+                          <div class="flex justify-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-red-500">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                          </div>
+                          <div class="ml-2 w-full flex-1">
+                            <div>
+                              <div class="mt-3 text-3xl font-bold leading-8">{{ closed_ticket_n}}</div>
+
+                              <div class="mt-1 text-base text-gray-600">Closed Tickets</div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                      <a class="transform  hover:scale-105 transition duration-300 shadow-xl rounded-lg col-span-12 sm:col-span-6 xl:col-span-3 intro-y bg-white"
+                        href="{% url 'ticket_queue' %}">
+                        <div class="p-5">
+                          <div class="flex justify-between">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-yellow-400" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                            </svg>
+                          </div>
+                          <div class="ml-2 w-full flex-1">
+                            <div>
+                              <div class="mt-3 text-3xl font-bold leading-8">{{ pending_ticket_n}}</div>
+
+                              <div class="mt-1 text-base text-gray-600">Pending Tickets</div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                   {% endif %}
+                </div>
+              </div>
+              <!-- <div class="col-span-12 mt-5">
+                <div class="grid gap-2 grid-cols-1 lg:grid-cols-2">
+                  <div class="bg-white shadow-lg p-4" id="chartline"></div>
+                  <div class="bg-white shadow-lg" id="chartpie"></div>
+                </div>
+              </div> -->
+              <div class="h-full col-span-12">
+                <div class="grid gap-2 grid-cols-1 lg:grid-cols-1">
+                  <div class="bg-white p-4 shadow-lg rounded-lg">
+                    <h1 class="font-bold text-base">Table</h1>
+                    <div class="mt-4">
+                      <div class="flex flex-col">
+                        <div class="-my-2 overflow-x-auto">
+                          <div class="py-2 align-middle inline-block min-w-full">
+                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg bg-white">
+                              
+                              
+                              {% if request.user.is_customer %}
+                                
+                              
+                                
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Ticket Number</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Title</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Created On</span>
+                                          </div>
+                                        </th>
+                                       
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">ssigned To</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">STATUS</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">ACTION</span>
+                                          </div>
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                      <!-- List -->
+                                      
+                                      {% for t in all_ticket_for_customer %}
+                                        
+                                     
+                                        
+                                         <tr>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.number}}</p>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <h3>{{t.title|title}}</h3>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.created_at |date:"d,m,Y"}}</p>
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.assigned_to|title}}</p>
+                                            </td>
+                                            
+                                            {% if t.status == "Pending" %}
+                                              
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-yellow-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Pending</p>
+                                                </div>
+                                              </td>
+                                             {% elif t.status == "Active" %}
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-green-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Active</p>
+                                                </div>
+                                              </td>
+                                             {% elif t.status == "Completed" %}
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-red-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Completed</p>
+                                                </div>
+                                              </td>
+                                           {% endif %} 
+                                            <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
+                                              <div class="flex space-x-4">
+                                                <a href="{% url 'update_ticket' t.id %}" class="text-blue-500 hover:text-blue-600">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                  </svg>
+                                                  <p>Edit</p>
+                                                </a>
+                                                <a href="{% url 'delete_ticket' t.id %}"  onclick="return confirm('Do you want to Delete this Ticket.?')"  class=" text-red-500 hover:text-red-600 ">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1 ml-3" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                  </svg>
+                                                  <p>Delete</p>
+                                                </a>
+                                              </div>
+                                            </td>
+                                         </tr>
+                                      {% endfor %}
+                                    
+                                    </tbody>
+                                 </table>
+                              {% elif request.user.is_admin %}
+                                 <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Ticket Number</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Title</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Created On</span>
+                                          </div>
+                                        </th>
+                                       
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">Created By</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">STATUS</span>
+                                          </div>
+                                        </th>
+                                        <th
+                                          class="px-6 py-3 bg-gray-50 text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                          <div class="flex cursor-pointer">
+                                            <span class="mr-2">ACTION</span>
+                                          </div>
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                      <!-- List -->
+                                      
+                                      {% for t in all_ticket_for_admin %}
+                                        
+                                     
+                                        
+                                         <tr>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.number}}</p>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <h3>{{t.title|title}}</h3>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.created_at |date:"d,m,Y"}}</p>
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                              <p>{{t.created_by|title}}</p>
+                                            </td>
+                                            
+                                            {% if t.status == "Pending" %}
+                                              
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-yellow-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Pending</p>
+                                                </div>
+                                              </td>
+                                             {% elif t.status == "Active" %}
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-green-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Active</p>
+                                                </div>
+                                              </td>
+                                             {% elif t.status == "Completed" %}
+                                              <td class="px-6 py-4 whitespace-no-wrap text-md leading-5">
+                                                <div class="flex text-red-500">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                  </svg>
+                                                  <p>Completed</p>
+                                                </div>
+                                              </td>
+                                           {% endif %} 
+                                            <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
+                                              <div class="flex space-x-4">
+                                                <a href="{% url 'update_ticket' t.id %}" class="text-blue-500 hover:text-blue-600">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                  </svg>
+                                                  <p>Edit</p>
+                                                </a>
+                                                <a href="{% url 'delete_ticket' t.id %}"  onclick="return confirm('Do you want to Delete this Ticket.?')"  class=" text-red-500 hover:text-red-600 ">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1 ml-3" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                  </svg>
+                                                  <p>Delete</p>
+                                                </a>
+                                              </div>
+                                            </td>
+                                         </tr>
+                                      {% endfor %}
+                                    
+                                    </tbody>
+                                 </table>
+                              {% endif %}
+
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script>
+    function data() {
+
+      return {
+
+        isSideMenuOpen: false,
+        toggleSideMenu() {
+          this.isSideMenuOpen = !this.isSideMenuOpen
+        },
+        closeSideMenu() {
+          this.isSideMenuOpen = false
+        },
+        isNotificationsMenuOpen: false,
+        toggleNotificationsMenu() {
+          this.isNotificationsMenuOpen = !this.isNotificationsMenuOpen
+        },
+        closeNotificationsMenu() {
+          this.isNotificationsMenuOpen = false
+        },
+        isProfileMenuOpen: false,
+        toggleProfileMenu() {
+          this.isProfileMenuOpen = !this.isProfileMenuOpen
+        },
+        closeProfileMenu() {
+          this.isProfileMenuOpen = false
+        },
+        isPagesMenuOpen: false,
+        togglePagesMenu() {
+          this.isPagesMenuOpen = !this.isPagesMenuOpen
+        },
+
+      }
+    }
+  </script>
+  <script>
+    var chart = document.querySelector('#chartline')
+    var options = {
+      series: [{
+        name: 'TEAM A',
+        type: 'area',
+        data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33]
+      }, {
+        name: 'TEAM B',
+        type: 'line',
+        data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43]
+      }],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: false
+        }
+      },
+      stroke: {
+        curve: 'smooth'
+      },
+      fill: {
+        type: 'solid',
+        opacity: [0.35, 1],
+      },
+      labels: ['Dec 01', 'Dec 02', 'Dec 03', 'Dec 04', 'Dec 05', 'Dec 06', 'Dec 07', 'Dec 08', 'Dec 09 ',
+        'Dec 10', 'Dec 11'
+      ],
+      markers: {
+        size: 0
+      },
+      yaxis: [{
+          title: {
+            text: 'Series A',
+          },
+        },
+        {
+          opposite: true,
+          title: {
+            text: 'Series B',
+          },
+        },
+      ],
+      tooltip: {
+        shared: true,
+        intersect: false,
+        y: {
+          formatter: function (y) {
+            if (typeof y !== "undefined") {
+              return y.toFixed(0) + " points";
+            }
+            return y;
+          }
+        }
+      }
+    };
+    var chart = new ApexCharts(chart, options);
+    chart.render();
+  </script>
+  <script>
+    var chart = document.querySelector('#chartpie')
+    var options = {
+      series: [44, 55, 67, 83],
+      chart: {
+        height: 350,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: {
+              fontSize: '22px',
+            },
+            value: {
+              fontSize: '16px',
+            },
+            total: {
+              show: true,
+              label: 'Total',
+              formatter: function (w) {
+                // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                return 249
+              }
+            }
+          }
+        }
+      },
+      labels: ['Apples', 'Oranges', 'Bananas', 'Berries'],
+    };
+    var chart = new ApexCharts(chart, options);
+    chart.render();
+  </script>
+</body>
+
+</html>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+{% extends "base.html" %} {% block content %}
+<div class="text-center mt-5 mb-10">
+  <h1 class="text-4xl text-bold">Detail Page</h1>
+</div>
+
+<div class="flex justify-center">
+  <div
+    class="w-[70%] p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-center mb-4">
+      <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">
+        Title
+      </h5>
+    </div>
+    <div class="flow-root">
+      <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Ticket Number
+              </p>
+            </div>
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.number}}
+            </div>
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Content
+              </p>
+            </div>
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.content}}
+            </div>
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Created At
+              </p>
+            </div>
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.created_at|date:"d,m,Y"}}
+            </div>
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Assigned To
+              </p>
+            </div>
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.assigned_to|title}}
+            </div>
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Resolved?
+              </p>
+            </div>
+
+            {% if ticket.is_resolved %}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2 rounded-xl bg-red-500"
+            >
+              Resolved?
+            </div>
+            {% else %}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2 rounded-xl bg-green-400"
+            >
+              Not, Yes
+            </div>
+            {% endif %}
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Created By
+              </p>
+            </div>
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.created_by|title}}
+            </div>
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Accepted Date
+              </p>
+            </div>
+            
+            {% if not ticket.accepted_date %}
+            
+              <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-red-400"
+            >
+              Waiting!!!
+            </div>
+            {% else %}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white"
+            >
+              {{ticket.accepted_date|date:"d,m,Y"}}
+            </div>
+
+            {% endif %}
+              
+            
+          </div>
+        </li>
+        <li class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="flex-1 min-w-0 ms-4">
+              <p
+                class="text-xl font-medium text-gray-900 truncate dark:text-white"
+              >
+                Ticket Status
+              </p>
+            </div>
+
+            {% if ticket.status == "Pending" %}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2 rounded-xl bg-yellow-400"
+            >
+              Pending
+            </div>
+            {% elif ticket.status == "Active" %}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2 rounded-xl bg-green-400"
+            >
+              Active
+            </div>
+            {% elif ticket.status == "Completed"%}
+            <div
+              class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2 rounded-xl bg-red-400"
+            >
+              Completed
+            </div>
+            {% endif %}
+          </div>
+        </li>
+      </ul>
+
+      {% if request.user.is_admin and not ticket.is_resolved %}
+      <div class="flex items-center justify-center mb-4">
+        <a
+          href="{% url 'closedt_ticket' ticket.id %}"
+          onclick="return confirm('Do You want to closed this Ticket??')"
+          class="text-xl text-white font-bold leading-none text-gray-900 rounded-xl p-4 bg-red-400"
+          >close Ticket</a
+        >
+      </div>
+      {% elif request.user.is_customer and not ticket.is_resolved %}
+      <div class="flex items-center justify-center mb-4">
+        <a
+          href="{% url 'update_ticket' ticket.id %}"
+          class="text-xl text-white font-bold leading-none text-gray-900 rounded-xl p-4 bg-sky-600"
+          >update Ticket</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

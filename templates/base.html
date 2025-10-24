@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/msg.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+    <!-- navbar -->
+    {% if not '/users' in request.path %} 
+      <nav class="flex items-center justify-between flex-wrap bg-gray-500 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <i class="fa-solid fa-ticket fa-xl" style="color: #63E6BE; margin-right: 5px;"></i>
+          <span class="font-semibold text-xl tracking-tight">Ticketing System</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+            </svg>
+          </button>
+        </div>
+
+        {% if request.user.is_admin %}
+          <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+            <div class="text-sm lg:flex-grow">
+              <a href="{% url 'ticket_queue' %}" class="{% if 'ticket_queue' in request.path %} active {% endif %}block mt-4 text-lg lg:inline-block lg:mt-0 text-teal-200 active:text-white hover:text-white mr-4">Ticket Queue</a>
+              <a href="{% url 'workspace' %}" class=" {% if 'workspace' in request.path %} active {% endif %}block mt-4 text-lg lg:inline-block lg:mt-0 text-teal-200 active:text-white hover:text-white mr-4">Workspace</a>
+              <div class="relative inline-block text-left">
+                <div class="ml-3">
+                  <button type="button" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75" id="dropdown-button" aria-expanded="false" aria-haspopup="true">
+                    Manage Tickets<svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button" tabindex="-1" style="display: none;" id="dropdown-menu">
+                  <div class="py-1" role="none">
+                    <a href="{% url 'all_tickets_closed' %}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-sky-200 hover:rounded-lg" role="menuitem" tabindex="-1" id="dropdown-option-1">Closed Tickets</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% if request.user.is_authenticated %}
+              <div>
+                <a href="{% url 'logout' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-red-600 mt-4 lg:mt-0"><i class="fa-solid fa-door-open"></i>&nbsp;Logout</a>
+              </div>
+            {% else %}
+              <div>
+                <a href="{% url 'login' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;Login</a>
+              </div>
+              <div>
+                <a href="{% url 'register' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"><i class="fa-solid fa-user-plus"></i>&nbsp;Register</a>
+              </div>
+            {% endif %}
+          </div>
+        {% elif request.user.is_customer %}
+          <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+            <div class="text-sm lg:flex-grow">
+              <a href="{% url 'create_ticket' %}" class="block mt-4 text-lg lg:inline-block lg:mt-0 text-teal-200 active:text-white hover:text-white mr-4  {% if 'create_ticket' in request.path %} active {% endif %}">Create Ticket</a>
+              <a href="{% url 'all_tickets' %}" class="block mt-4 text-lg lg:inline-block lg:mt-0 text-teal-200 active:text-white hover:text-white mr-4{% if 'all_tickets' in request.path %} active {% endif %}">view Ticket</a>
+            </div>
+
+            {% if request.user.is_authenticated %}
+              <div>
+                <a href="{% url 'logout' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-red-600 mt-4 lg:mt-0"><i class="fa-solid fa-door-open"></i>&nbsp;Logout</a>
+              </div>
+            {% else %}
+              <div>
+                <a href="{% url 'login' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;Login</a>
+              </div>
+              <div>
+                <a href="{% url 'register' %}" class="inline-block text-sm mr-2 px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"><i class="fa-solid fa-user-plus"></i>&nbsp;Register</a>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </nav>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div id="message" class="flex justify-center">
+          <div class="flex justify-center items-center w-[400px] h-[50px] mt-2 msg-{{ message.tags }} rounded-xl ">
+            <h4 class="text-xl font-bold text-white">{{ message }}</h4>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}
+
+    {% endblock %}
+    <script>
+      let msg = document.getElementById('message')
+      setInterval(() => {
+        msg.style.display = 'none'
+      }, 3000)
+    </script>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static 'js/dropdown.js' %}"></script>
+</html>
