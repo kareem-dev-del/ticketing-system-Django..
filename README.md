@@ -6,6 +6,9 @@
 [![Status](https://img.shields.io/badge/Status-Completed-brightgreen)]()
 
 ---
+<img src="imag/1.jpg" width="600">
+<img src="imag/2.jpg" width="600">
+<img src="imag/3.jpg" width="600">
 
 ## 📌 Project Overview
 The **Django Ticketing System** is a modern web application that allows users to submit, track, and manage tickets efficiently. It’s perfect for **IT support teams, customer service departments**, or any organization that handles requests and issues.
