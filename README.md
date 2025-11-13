@@ -21,12 +21,12 @@
 ## 📌 Project Overview
 The **Django Ticketing System** is a modern web application that allows users to submit, track, and manage tickets efficiently. It’s perfect for **IT support teams, customer service departments**, or any organization that handles requests and issues.
 
-This project emphasizes **clean UI, robust backend, and scalability**.
+This project emphasizes **clean UI, robust backend, and scalability**...
 
 ---
 
 ## ⚙️ Features
-- ✅ User registration and authentication  
+- ✅ User registration and authentication  .
 - ✅ Create, update, and view tickets  
 - ✅ Ticket status management (Open, In Progress, Closed)  
 - ✅ Admin dashboard for ticket overview  
